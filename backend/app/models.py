@@ -25,4 +25,16 @@ class ErrorResponse(BaseModel):
     """
     error: str = Field(..., description="Mensaje de error")
     detail: Optional[str] = Field(None, description="Detalles adicionales del error")
-    status_code: int = Field(..., description="Código de estado HTTP") 
+    status_code: int = Field(..., description="Código de estado HTTP")
+
+class ConversionHistory(BaseModel):
+    """
+    Modelo para el historial de conversiones.
+    """
+    id: str = Field(..., description="Identificador único de la conversión")
+    request: NistDataRequest = Field(..., description="Solicitud original")
+    response: NistDataResponse = Field(..., description="Respuesta del NIST")
+    created_at: datetime = Field(default_factory=datetime.now, description="Fecha y hora de la conversión")
+    status: str = Field(..., description="Estado de la conversión (success/error)")
+    error: Optional[ErrorResponse] = Field(None, description="Error si la conversión falló")
+    file_path: Optional[str] = Field(None, description="Ruta al archivo generado") 
