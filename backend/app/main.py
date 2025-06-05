@@ -1,6 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from .config import get_settings
+from .models import NistDataRequest, NistDataResponse, ErrorResponse
+from .nist_api import NistAPIClient
 
+settings = get_settings()
 app = FastAPI(
     title="NistDataConverter API",
     description="API para convertir y exportar datos del NIST a formatos JSON y CSV",
@@ -10,11 +14,14 @@ app = FastAPI(
 # Configurar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción, reemplazar con orígenes específicos
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Instancia del cliente NIST
+nist_client = NistAPIClient()
 
 @app.get("/")
 async def root():
@@ -35,3 +42,17 @@ async def health_check():
         "estado": "saludable",
         "version": "1.0.0"
     }
+
+@app.post("/api/nist/data", response_model=NistDataResponse)
+async def get_nist_data(request: NistDataRequest):
+    """
+    Endpoint para obtener datos del NIST.
+    """
+    try:
+        response = await nist_client.fetch_data(request)
+        return response
+    except ErrorResponse as e:
+        raise HTTPException(
+            status_code=e.status_code,
+            detail={"error": e.error, "detail": e.detail}
+        )
