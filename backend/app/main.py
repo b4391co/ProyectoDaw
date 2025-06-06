@@ -1,10 +1,14 @@
-from fastapi import FastAPI, HTTPException, Response, Query
+from fastapi import FastAPI, HTTPException, Response, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from .config import get_settings
-from .models import NistDataRequest, NistDataResponse, ErrorResponse
+from .models import NistDataRequest, NistDataResponse, ErrorResponse, ConversionHistory
 from .nist_api import NistAPIClient
 from .converters import DataConverter
+from .database import save_conversion_history, get_conversion_history, get_conversion_by_id
+import uuid
+from datetime import datetime
+from typing import List, Optional
 
 settings = get_settings()
 app = FastAPI(
@@ -60,6 +64,7 @@ async def get_nist_data(
         pretty: Si es True, formatea el JSON con indentación
         delimiter: Delimitador para archivos CSV
     """
+    conversion_id = str(uuid.uuid4())
     try:
         response = await nist_client.fetch_data(request)
         
@@ -70,6 +75,16 @@ async def get_nist_data(
             pretty=pretty,
             delimiter=delimiter
         )
+        
+        # Guardar en el historial
+        history = ConversionHistory(
+            id=conversion_id,
+            request=request,
+            response=response,
+            status="success",
+            file_path=f"nist_data_{converter.format_datetime(response.timestamp)}.{request.format.lower()}"
+        )
+        save_conversion_history(history)
         
         if request.format.lower() == "csv":
             return Response(
@@ -89,12 +104,65 @@ async def get_nist_data(
             )
             
     except ValueError as e:
+        error = ErrorResponse(
+            error="Error de formato",
+            detail=str(e),
+            status_code=400
+        )
+        history = ConversionHistory(
+            id=conversion_id,
+            request=request,
+            response=NistDataResponse(data=[], metadata={}, timestamp=datetime.now()),
+            status="error",
+            error=error
+        )
+        save_conversion_history(history)
         raise HTTPException(
             status_code=400,
             detail={"error": "Error de formato", "detail": str(e)}
         )
     except ErrorResponse as e:
+        history = ConversionHistory(
+            id=conversion_id,
+            request=request,
+            response=NistDataResponse(data=[], metadata={}, timestamp=datetime.now()),
+            status="error",
+            error=e
+        )
+        save_conversion_history(history)
         raise HTTPException(
             status_code=e.status_code,
             detail={"error": e.error, "detail": e.detail}
         )
+
+@app.get("/api/history", response_model=List[ConversionHistory])
+async def list_conversion_history(
+    skip: int = Query(0, description="Número de registros a saltar"),
+    limit: int = Query(10, description="Número máximo de registros a devolver"),
+    status: Optional[str] = Query(None, description="Filtrar por estado (success/error)")
+):
+    """
+    Endpoint para obtener el historial de conversiones.
+    
+    Args:
+        skip: Número de registros a saltar
+        limit: Número máximo de registros a devolver
+        status: Filtrar por estado (success/error)
+    """
+    return get_conversion_history(skip=skip, limit=limit, status=status)
+
+@app.get("/api/history/{conversion_id}", response_model=ConversionHistory)
+async def get_conversion_history_by_id(conversion_id: str):
+    """
+    Endpoint para obtener una conversión específica por su ID.
+    
+    Args:
+        conversion_id: ID de la conversión
+    """
+    history = get_conversion_by_id(conversion_id)
+    if not history:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "Conversión no encontrada"}
+        )
+    return history
