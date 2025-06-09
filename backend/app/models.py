@@ -1,32 +1,34 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any
+from typing import List, Optional, Dict, Any
 from datetime import datetime
 
 class NistDataRequest(BaseModel):
     """
     Modelo para la solicitud de datos al NIST.
     """
-    start_date: datetime = Field(..., description="Fecha de inicio de la búsqueda")
-    end_date: datetime = Field(..., description="Fecha de fin de la búsqueda")
-    search_term: Optional[str] = Field(None, description="Término de búsqueda general")
-    keywords: Optional[List[str]] = Field(default=[], description="Lista de palabras clave para filtrar")
-    severity: Optional[str] = Field(None, description="Nivel de severidad para filtrar (critical, high, medium, low)")
-    format: str = Field(..., description="Formato de salida (json o csv)")
+    start_date: str = Field(..., description="Fecha de inicio en formato ISO")
+    end_date: str = Field(..., description="Fecha de fin en formato ISO")
+    search_term: Optional[str] = Field(None, description="Término de búsqueda")
+    keywords: Optional[List[str]] = Field(default=[], description="Lista de palabras clave")
+    severity: Optional[str] = Field(None, description="Nivel de severidad (critical, high, medium, low)")
+    output_format: Optional[str] = Field("json", description="Formato de salida (json/csv)")
+    pretty_json: Optional[bool] = Field(False, description="Formatear JSON con indentación")
+    custom_delimiter: Optional[str] = Field(",", description="Delimitador personalizado para CSV")
 
 class NistDataResponse(BaseModel):
     """
     Modelo para la respuesta de datos del NIST.
     """
-    data: List[Dict[str, Any]] = Field(..., description="Datos obtenidos del NIST")
-    metadata: Dict[str, Any] = Field(..., description="Metadatos de la respuesta")
-    timestamp: datetime = Field(..., description="Fecha y hora de la respuesta")
+    data: List[Dict[str, Any]] = Field(..., description="Datos obtenidos de la API")
+    metadata: Optional[Dict[str, Any]] = Field(default={}, description="Metadatos adicionales")
+    timestamp: datetime = Field(default_factory=datetime.now, description="Timestamp de la respuesta")
 
 class ErrorResponse(BaseModel):
     """
     Modelo para respuestas de error.
     """
     error: str = Field(..., description="Tipo de error")
-    detail: str = Field(..., description="Detalles del error")
+    detail: str = Field(..., description="Descripción detallada del error")
     status_code: int = Field(..., description="Código de estado HTTP")
 
 class ConversionHistory(BaseModel):
@@ -34,9 +36,14 @@ class ConversionHistory(BaseModel):
     Modelo para el historial de conversiones.
     """
     id: str = Field(..., description="ID único de la conversión")
-    request: NistDataRequest = Field(..., description="Solicitud original")
-    response: NistDataResponse = Field(..., description="Respuesta del NIST")
-    status: str = Field(..., description="Estado de la conversión (success/error)")
-    file_path: Optional[str] = Field(None, description="Ruta del archivo generado")
-    error: Optional[ErrorResponse] = Field(None, description="Detalles del error si ocurrió alguno")
-    created_at: datetime = Field(default_factory=datetime.now, description="Fecha y hora de la conversión") 
+    start_date: str = Field(..., description="Fecha de inicio")
+    end_date: str = Field(..., description="Fecha de fin")
+    search_term: Optional[str] = Field(None, description="Término de búsqueda")
+    output_format: str = Field(..., description="Formato de salida")
+    pretty_json: bool = Field(False, description="JSON formateado")
+    custom_delimiter: str = Field(",", description="Delimitador CSV")
+    keywords: Optional[List[str]] = Field(default=[], description="Palabras clave")
+    severity: Optional[str] = Field(None, description="Nivel de severidad")
+    status: str = Field(..., description="Estado de la conversión")
+    error: Optional[ErrorResponse] = Field(None, description="Error si ocurrió")
+    timestamp: datetime = Field(default_factory=datetime.now, description="Timestamp de la conversión") 

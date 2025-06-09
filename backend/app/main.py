@@ -15,6 +15,7 @@ from datetime import datetime
 from typing import List, Optional
 import os
 import logging
+from pathlib import Path
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -27,9 +28,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configurar archivos estáticos y templates
-app.mount("/static", StaticFiles(directory="../frontend/static"), name="static")
-templates = Jinja2Templates(directory="frontend/templates")
+# Configurar el directorio base
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# Montar archivos estáticos
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "frontend" / "static")), name="static")
+
+# Configurar templates
+templates = Jinja2Templates(directory=str(BASE_DIR / "frontend" / "templates"))
 
 # Configurar CORS
 app.add_middleware(
@@ -53,21 +59,11 @@ async def startup_event():
     init_db()
 
 @app.get("/", response_class=HTMLResponse)
-async def read_root():
-    today = datetime.now().strftime("%Y-%m-%d")
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": {},
-            "today": today
-        }
-    )
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
-@app.get("/history")
-async def history_page(request: Request):
-    """
-    Página del historial de conversiones.
-    """
+@app.get("/history", response_class=HTMLResponse)
+async def read_history(request: Request):
     return templates.TemplateResponse("history.html", {"request": request})
 
 @app.get("/health")
@@ -239,10 +235,16 @@ async def search_nist_data(request: NistDataRequest):
         logger.info(f"Recibida petición de búsqueda: {request}")
         data = await nist_service.fetch_data(request)
         logger.info(f"Datos obtenidos de NIST: {len(data)} registros")
-        return NistDataResponse(data=data)
+        return NistDataResponse(data=data, metadata={"total": len(data)}, timestamp=datetime.now())
     except Exception as e:
         logger.error(f"Error en la búsqueda: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "error": "Error al realizar la búsqueda",
+                "message": str(e)
+            }
+        )
 
 @app.post("/api/convert", response_model=NistDataResponse)
 async def convert_data(request: NistDataRequest):

@@ -3,55 +3,55 @@ import aiohttp
 import logging
 from ..models import NistDataRequest
 from ..config import get_settings
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
 
 class NistService:
     def __init__(self):
-        self.base_url = settings.NIST_API_BASE_URL
+        self.base_url = "https://services.nvd.nist.gov/rest/json/cves/2.0"
         self.api_key = settings.NIST_API_KEY
 
-    async def fetch_data(self, request: NistDataRequest) -> List[Dict[str, Any]]:
-        """
-        Obtiene datos de la API de NIST basados en los parámetros de la solicitud.
-        
-        Args:
-            request: Objeto NistDataRequest con los parámetros de búsqueda
-            
-        Returns:
-            Lista de diccionarios con los datos obtenidos
-        """
+    async def fetch_data(self, request: NistDataRequest):
         try:
-            async with aiohttp.ClientSession() as session:
-                # Construir la URL con los parámetros
-                params = {
-                    'startDate': request.start_date,
-                    'endDate': request.end_date,
-                    'apiKey': self.api_key
-                }
+            logger.info(f"Iniciando búsqueda en NIST con parámetros: {request}")
+            
+            # Construir la URL de la API
+            url = f"{self.base_url}/cves"
+            
+            # Preparar los parámetros de la búsqueda
+            params = {
+                "pubStartDate": f"{request.start_date}T00:00:00.000",
+                "pubEndDate": f"{request.end_date}T23:59:59.999",
+                "apiKey": self.api_key,
+                "resultsPerPage": 20
+            }
+            
+            if request.search_term:
+                params["keywordSearch"] = request.search_term
                 
-                if request.search_term:
-                    params['keyword'] = request.search_term
+            if request.keywords:
+                params["keyword"] = ",".join(request.keywords)
                 
-                if request.keywords:
-                    params['keywords'] = ','.join(request.keywords)
-                
-                if request.severity:
-                    params['severity'] = request.severity
+            if request.severity:
+                params["cvssV3Severity"] = request.severity
 
-                logger.info(f"Realizando petición a NIST con parámetros: {params}")
-                
-                async with session.get(self.base_url, params=params) as response:
-                    if response.status != 200:
+            logger.info(f"Realizando petición a NIST API: {url}")
+            logger.info(f"Parámetros de la petición: {params}")
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params) as response:
+                    if not response.ok:
                         error_text = await response.text()
-                        logger.error(f"Error en la petición a NIST: {error_text}")
+                        logger.error(f"Error en la respuesta de NIST API: {error_text}")
                         raise Exception(f"Error en la API de NIST: {error_text}")
                     
                     data = await response.json()
-                    logger.info(f"Datos obtenidos de NIST: {len(data)} registros")
-                    return data
-
+                    logger.info(f"Respuesta recibida de NIST API: {len(data.get('vulnerabilities', []))} vulnerabilidades")
+                    
+                    return data.get("vulnerabilities", [])
+                    
         except Exception as e:
             logger.error(f"Error al obtener datos de NIST: {str(e)}")
-            raise 
+            raise Exception(f"Error al obtener datos de NIST: {str(e)}") 
