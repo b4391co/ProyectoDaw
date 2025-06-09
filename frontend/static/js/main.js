@@ -3,6 +3,8 @@ const searchForm = document.getElementById('searchForm');
 const startDateInput = document.getElementById('startDate');
 const endDateInput = document.getElementById('endDate');
 const searchTermInput = document.getElementById('searchTerm');
+const keywordsInput = document.getElementById('keywords');
+const severitySelect = document.getElementById('severity');
 const formatJsonRadio = document.getElementById('formatJson');
 const formatCsvRadio = document.getElementById('formatCsv');
 const prettyJsonCheckbox = document.getElementById('prettyJson');
@@ -131,6 +133,8 @@ function getFormData() {
         start_date: `${startDateInput.value}T00:00:00`,
         end_date: `${endDateInput.value}T23:59:59`,
         search_term: searchTermInput.value || null,
+        keywords: keywordsInput.value ? keywordsInput.value.split(',').map(k => k.trim()) : [],
+        severity: severitySelect.value || null,
         format: formatJsonRadio.checked ? 'json' : 'csv',
         pretty: prettyJsonCheckbox.checked,
         delimiter: customDelimiterCheckbox.checked ? delimiterInput.value : ','
