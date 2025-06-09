@@ -1,0 +1,116 @@
+/* Estilos generales */
+body {
+    background-color: #f8f9fa;
+}
+
+/* Estilos para las tarjetas */
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+/* Estilos para los inputs */
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Estilos para los botones */
+.btn-primary {
+    padding: 0.5rem 2rem;
+}
+
+.btn-group .btn {
+    padding: 0.5rem 1rem;
+}
+
+/* Estilos para los resultados */
+#resultsContent pre {
+    max-height: 500px;
+    overflow-y: auto;
+    margin: 0;
+}
+
+/* Estilos para el toast */
+.toast {
+    background-color: white;
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Estilos para los checkboxes y radio buttons */
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Estilos para el navbar */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para los labels */
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Estilos para los mensajes de error */
+.invalid-feedback {
+    font-size: 0.875rem;
+}
+
+/* Estilos para el contenedor de resultados */
+#searchResults {
+    transition: all 0.3s ease;
+}
+
+/* Estilos para los iconos */
+.bi {
+    margin-right: 0.5rem;
+}
+
+/* Estilos para el delimitador personalizado */
+#delimiterContainer {
+    transition: all 0.3s ease;
+}
+
+/* Estilos para el contenedor de opciones adicionales */
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+/* Estilos para el botón de búsqueda */
+.btn-lg {
+    padding: 0.75rem 2rem;
+    font-weight: 500;
+}
+
+/* Estilos para el contenedor principal */
+.container {
+    max-width: 1200px;
+    padding: 2rem 1rem;
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .btn-lg {
+        width: 100%;
+    }
+    
+    .btn-group {
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        flex: 1;
+    }
+} 

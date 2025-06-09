@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Response, Query, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from .config import get_settings
@@ -37,12 +37,16 @@ app.add_middleware(
 nist_client = NistAPIClient()
 converter = DataConverter()
 
-@app.get("/")
-async def root(request: Request):
-    """
-    Endpoint raíz para verificar que la API está funcionando.
-    """
-    return templates.TemplateResponse("index.html", {"request": request})
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    today = datetime.now().strftime("%Y-%m-%d")
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": {},
+            "today": today
+        }
+    )
 
 @app.get("/history")
 async def history_page(request: Request):
