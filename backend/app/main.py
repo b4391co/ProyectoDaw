@@ -21,7 +21,7 @@ app = FastAPI(
 )
 
 # Configurar archivos estáticos y templates
-app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
+app.mount("/static", StaticFiles(directory="../frontend/static"), name="static")
 templates = Jinja2Templates(directory="frontend/templates")
 
 # Configurar CORS
