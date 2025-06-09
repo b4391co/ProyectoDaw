@@ -1,6 +1,9 @@
 from fastapi import FastAPI, HTTPException, Response, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi import Request
 from .config import get_settings
 from .models import NistDataRequest, NistDataResponse, ErrorResponse, ConversionHistory
 from .nist_api import NistAPIClient
@@ -17,6 +20,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Configurar archivos estáticos y templates
+app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
+templates = Jinja2Templates(directory="frontend/templates")
+
 # Configurar CORS
 app.add_middleware(
     CORSMiddleware,
@@ -31,14 +38,18 @@ nist_client = NistAPIClient()
 converter = DataConverter()
 
 @app.get("/")
-async def root():
+async def root(request: Request):
     """
     Endpoint raíz para verificar que la API está funcionando.
     """
-    return {
-        "mensaje": "Bienvenido a NistDataConverter API",
-        "estado": "activo"
-    }
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/history")
+async def history_page(request: Request):
+    """
+    Página del historial de conversiones.
+    """
+    return templates.TemplateResponse("history.html", {"request": request})
 
 @app.get("/health")
 async def health_check():
