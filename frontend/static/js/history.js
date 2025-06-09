@@ -2,6 +2,8 @@
 let currentPage = 1;
 const itemsPerPage = 10;
 let currentStatus = null;
+let currentSearch = null;
+let currentConversion = null;
 
 // Elementos del DOM
 const tableBody = document.getElementById('historyTableBody');
@@ -12,6 +14,10 @@ const itemsCountSpan = document.getElementById('itemsCount');
 const filterAllBtn = document.getElementById('filterAll');
 const filterSuccessBtn = document.getElementById('filterSuccess');
 const filterErrorBtn = document.getElementById('filterError');
+const searchInput = document.getElementById('searchInput');
+const searchButton = document.getElementById('searchButton');
+const clearSearchBtn = document.getElementById('clearSearch');
+const downloadFileBtn = document.getElementById('downloadFile');
 
 // Modal elements
 const conversionModal = new bootstrap.Modal(document.getElementById('conversionModal'));
@@ -19,6 +25,11 @@ const requestDetails = document.getElementById('requestDetails');
 const responseDetails = document.getElementById('responseDetails');
 const errorDetails = document.getElementById('errorDetails');
 const errorContent = document.getElementById('errorContent');
+
+// Toast notification
+const notificationToast = new bootstrap.Toast(document.getElementById('notificationToast'));
+const toastTitle = document.getElementById('toastTitle');
+const toastMessage = document.getElementById('toastMessage');
 
 // Cargar el historial inicial
 document.addEventListener('DOMContentLoaded', () => {
@@ -61,6 +72,37 @@ function setupEventListeners() {
         loadHistory();
         updateFilterButtons(filterErrorBtn);
     });
+
+    // Event listeners para la búsqueda
+    searchButton.addEventListener('click', () => {
+        currentSearch = searchInput.value.trim();
+        currentPage = 1;
+        loadHistory();
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        currentSearch = null;
+        currentPage = 1;
+        loadHistory();
+    });
+
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            currentSearch = searchInput.value.trim();
+            currentPage = 1;
+            loadHistory();
+        }
+    });
+
+    // Event listener para el botón de descarga
+    downloadFileBtn.addEventListener('click', () => {
+        if (currentConversion && currentConversion.file_path) {
+            downloadFile(currentConversion);
+        } else {
+            showNotification('Error', 'No hay archivo disponible para descargar', 'danger');
+        }
+    });
 }
 
 function updateFilterButtons(activeButton) {
@@ -74,8 +116,13 @@ async function loadHistory() {
     try {
         const skip = (currentPage - 1) * itemsPerPage;
         let url = `/api/history?skip=${skip}&limit=${itemsPerPage}`;
+        
         if (currentStatus) {
             url += `&status=${currentStatus}`;
+        }
+        
+        if (currentSearch) {
+            url += `&search=${encodeURIComponent(currentSearch)}`;
         }
 
         const response = await fetch(url);
@@ -88,7 +135,7 @@ async function loadHistory() {
         updatePagination(data.length);
     } catch (error) {
         console.error('Error:', error);
-        showError('Error al cargar el historial');
+        showNotification('Error', 'Error al cargar el historial', 'danger');
     }
 }
 
@@ -145,6 +192,8 @@ function updatePagination(itemsCount) {
 }
 
 function showConversionDetails(conversion) {
+    currentConversion = conversion;
+    
     // Mostrar detalles de la solicitud
     requestDetails.textContent = JSON.stringify(conversion.request, null, 2);
     
@@ -159,11 +208,40 @@ function showConversionDetails(conversion) {
         errorDetails.classList.add('d-none');
     }
     
+    // Actualizar estado del botón de descarga
+    downloadFileBtn.disabled = !conversion.file_path;
+    
     // Mostrar el modal
     conversionModal.show();
 }
 
-function showError(message) {
-    // Implementar un sistema de notificaciones si es necesario
-    alert(message);
+async function downloadFile(conversion) {
+    try {
+        const response = await fetch(`/api/nist/data/download/${conversion.id}`);
+        if (!response.ok) {
+            throw new Error('Error al descargar el archivo');
+        }
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = conversion.file_path;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        showNotification('Éxito', 'Archivo descargado correctamente', 'success');
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error', 'Error al descargar el archivo', 'danger');
+    }
+}
+
+function showNotification(title, message, type = 'info') {
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+    toastMessage.className = `toast-body text-${type}`;
+    notificationToast.show();
 } 

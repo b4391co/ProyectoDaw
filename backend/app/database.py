@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, String, DateTime, JSON
+from sqlalchemy import create_engine, Column, String, DateTime, JSON, or_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -54,14 +54,27 @@ def save_conversion_history(history: ConversionHistory) -> None:
 def get_conversion_history(
     skip: int = 0,
     limit: int = 10,
-    status: Optional[str] = None
+    status: Optional[str] = None,
+    search: Optional[str] = None
 ) -> List[ConversionHistory]:
     """Obtiene el historial de conversiones con paginación y filtrado opcional."""
     db = SessionLocal()
     try:
         query = db.query(ConversionHistoryDB)
+        
+        # Aplicar filtros
         if status:
             query = query.filter(ConversionHistoryDB.status == status)
+        
+        if search:
+            # Buscar en ID o fecha
+            search_term = f"%{search}%"
+            query = query.filter(
+                or_(
+                    ConversionHistoryDB.id.ilike(search_term),
+                    ConversionHistoryDB.created_at.cast(String).ilike(search_term)
+                )
+            )
         
         db_histories = query.order_by(ConversionHistoryDB.created_at.desc())\
             .offset(skip)\

@@ -1,9 +1,8 @@
-from fastapi import FastAPI, HTTPException, Response, Query, Depends
+from fastapi import FastAPI, HTTPException, Response, Query, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi import Request
 from .config import get_settings
 from .models import NistDataRequest, NistDataResponse, ErrorResponse, ConversionHistory
 from .nist_api import NistAPIClient
@@ -12,6 +11,7 @@ from .database import save_conversion_history, get_conversion_history, get_conve
 import uuid
 from datetime import datetime
 from typing import List, Optional
+import os
 
 settings = get_settings()
 app = FastAPI(
@@ -150,7 +150,8 @@ async def get_nist_data(
 async def list_conversion_history(
     skip: int = Query(0, description="Número de registros a saltar"),
     limit: int = Query(10, description="Número máximo de registros a devolver"),
-    status: Optional[str] = Query(None, description="Filtrar por estado (success/error)")
+    status: Optional[str] = Query(None, description="Filtrar por estado (success/error)"),
+    search: Optional[str] = Query(None, description="Buscar por ID o fecha")
 ):
     """
     Endpoint para obtener el historial de conversiones.
@@ -159,8 +160,9 @@ async def list_conversion_history(
         skip: Número de registros a saltar
         limit: Número máximo de registros a devolver
         status: Filtrar por estado (success/error)
+        search: Buscar por ID o fecha
     """
-    return get_conversion_history(skip=skip, limit=limit, status=status)
+    return get_conversion_history(skip=skip, limit=limit, status=status, search=search)
 
 @app.get("/api/history/{conversion_id}", response_model=ConversionHistory)
 async def get_conversion_history_by_id(conversion_id: str):
@@ -177,3 +179,37 @@ async def get_conversion_history_by_id(conversion_id: str):
             detail={"error": "Conversión no encontrada"}
         )
     return history
+
+@app.get("/api/nist/data/download/{conversion_id}")
+async def download_conversion_file(conversion_id: str):
+    """
+    Endpoint para descargar un archivo de conversión específico.
+    
+    Args:
+        conversion_id: ID de la conversión
+    """
+    history = get_conversion_by_id(conversion_id)
+    if not history:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "Conversión no encontrada"}
+        )
+    
+    if not history.file_path:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "No hay archivo disponible para esta conversión"}
+        )
+    
+    file_path = os.path.join("downloads", history.file_path)
+    if not os.path.exists(file_path):
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "El archivo no existe en el servidor"}
+        )
+    
+    return FileResponse(
+        file_path,
+        filename=history.file_path,
+        media_type="application/octet-stream"
+    )
