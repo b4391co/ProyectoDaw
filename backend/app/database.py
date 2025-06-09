@@ -23,10 +23,12 @@ class ConversionHistoryDB(Base):
     error = Column(JSON, nullable=True)
     file_path = Column(String, nullable=True)
 
-# Crear las tablas
-Base.metadata.create_all(bind=engine)
+def init_db():
+    """Inicializa la base de datos creando todas las tablas."""
+    Base.metadata.create_all(bind=engine)
 
 def get_db():
+    """Obtiene una sesión de base de datos."""
     db = SessionLocal()
     try:
         yield db

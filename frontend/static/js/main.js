@@ -73,7 +73,9 @@ async function handleFormSubmit(event) {
 
     try {
         const formData = getFormData();
-        const response = await fetch('/api/nist/data', {
+        console.log('Enviando datos:', formData); // Log para depuración
+        
+        const response = await fetch('/api/search', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -83,28 +85,44 @@ async function handleFormSubmit(event) {
 
         if (!response.ok) {
             const error = await response.json();
+            console.error('Error de respuesta:', error); // Log para depuración
             throw new Error(error.detail || 'Error en la búsqueda');
         }
 
-        // Manejar la respuesta según el formato
-        const contentType = response.headers.get('content-type');
-        if (contentType.includes('application/json')) {
-            const data = await response.json();
-            showResults(data);
-        } else {
-            // Para CSV, descargar el archivo
-            const blob = await response.blob();
+        const data = await response.json();
+        console.log('Datos recibidos:', data); // Log para depuración
+        
+        // Si el formato es CSV, hacer una petición adicional para la conversión
+        if (formData.format === 'csv') {
+            const convertResponse = await fetch('/api/convert', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!convertResponse.ok) {
+                const error = await convertResponse.json();
+                throw new Error(error.detail || 'Error en la conversión');
+            }
+
+            // Descargar el archivo CSV
+            const blob = await convertResponse.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `nist_data_${new Date().toISOString()}.${formData.format}`;
+            a.download = `nist_data_${new Date().toISOString()}.csv`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
+            showNotification('Éxito', 'Archivo CSV descargado correctamente', 'success');
+        } else {
+            // Mostrar resultados JSON
+            showResults(data);
+            showNotification('Éxito', 'Búsqueda completada correctamente', 'success');
         }
-
-        showNotification('Éxito', 'Búsqueda completada correctamente', 'success');
     } catch (error) {
         console.error('Error:', error);
         showNotification('Error', error.message, 'danger');

@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+from typing import List
 
 class Settings(BaseSettings):
     """
@@ -10,11 +11,12 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     
     # Configuración de la API NIST
-    NIST_API_BASE_URL: str = "https://data.nist.gov/od/ds/ark:/88434/mds2-"
+    NIST_API_BASE_URL: str = "https://services.nvd.nist.gov/rest/json/cves/2.0"
+    NIST_API_KEY: str = ""  # Se debe configurar en el archivo .env
     NIST_API_TIMEOUT: int = 30
     
     # Configuración de CORS
-    CORS_ORIGINS: list[str] = ["http://localhost:8000", "http://localhost:3000"]
+    CORS_ORIGINS: List[str] = ["http://localhost:8000", "http://localhost:3000"]
     
     class Config:
         env_file = ".env"

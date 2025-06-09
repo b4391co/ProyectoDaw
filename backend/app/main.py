@@ -7,11 +7,18 @@ from .config import get_settings
 from .models import NistDataRequest, NistDataResponse, ErrorResponse, ConversionHistory
 from .nist_api import NistAPIClient
 from .converters import DataConverter
-from .database import save_conversion_history, get_conversion_history, get_conversion_by_id
+from .database import save_conversion_history, get_conversion_history, get_conversion_by_id, get_db, init_db
+from .services.nist_service import NistService
+from .services.conversion_service import ConversionService
 import uuid
 from datetime import datetime
 from typing import List, Optional
 import os
+import logging
+
+# Configurar logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 settings = get_settings()
 app = FastAPI(
@@ -36,6 +43,14 @@ app.add_middleware(
 # Instancia del cliente NIST
 nist_client = NistAPIClient()
 converter = DataConverter()
+
+# Inicializar servicios
+nist_service = NistService()
+conversion_service = ConversionService()
+
+@app.on_event("startup")
+async def startup_event():
+    init_db()
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
@@ -216,4 +231,54 @@ async def download_conversion_file(conversion_id: str):
         file_path,
         filename=history.file_path,
         media_type="application/octet-stream"
+    )
+
+@app.post("/api/search", response_model=NistDataResponse)
+async def search_nist_data(request: NistDataRequest):
+    try:
+        logger.info(f"Recibida petición de búsqueda: {request}")
+        data = await nist_service.fetch_data(request)
+        logger.info(f"Datos obtenidos de NIST: {len(data)} registros")
+        return NistDataResponse(data=data)
+    except Exception as e:
+        logger.error(f"Error en la búsqueda: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/convert", response_model=NistDataResponse)
+async def convert_data(request: NistDataRequest):
+    try:
+        logger.info(f"Recibida petición de conversión: {request}")
+        data = await nist_service.fetch_data(request)
+        logger.info(f"Datos obtenidos de NIST: {len(data)} registros")
+        
+        converted_data = conversion_service.convert_data(data, request)
+        logger.info(f"Datos convertidos: {len(converted_data)} registros")
+        
+        # Guardar en historial
+        db = next(get_db())
+        history = ConversionHistory(
+            start_date=request.start_date,
+            end_date=request.end_date,
+            search_term=request.search_term,
+            output_format=request.output_format,
+            pretty_json=request.pretty_json,
+            custom_delimiter=request.custom_delimiter,
+            keywords=request.keywords,
+            severity=request.severity
+        )
+        db.add(history)
+        db.commit()
+        logger.info("Conversión guardada en historial")
+        
+        return NistDataResponse(data=converted_data)
+    except Exception as e:
+        logger.error(f"Error en la conversión: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Error global: {str(exc)}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": str(exc)}
     )
