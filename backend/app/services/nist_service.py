@@ -5,16 +5,66 @@ from ..models import NistDataRequest
 from ..config import get_settings
 from datetime import datetime, timedelta
 from urllib.parse import urlencode
+import requests
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
 
 class NistService:
     def __init__(self):
-        self.base_url = settings.NIST_API_BASE_URL
+        self.base_url = "https://services.nvd.nist.gov/rest/json/cves/2.0"
         self.api_key = settings.NIST_API_KEY
+        self.headers = {
+            "apiKey": self.api_key,
+            "Content-Type": "application/json"
+        }
         logger.info(f"Servicio NIST inicializado con URL base: {self.base_url}")
         logger.info(f"API Key presente: {bool(self.api_key)}")
+
+    async def search_vulnerabilities(self, start_date: str, end_date: str, search_term: str = None, 
+                                   keywords: list = None, severity: str = None):
+        try:
+            # Construir los parámetros de búsqueda
+            params = {
+                "pubStartDate": f"{start_date}T00:00:00.000",
+                "pubEndDate": f"{end_date}T23:59:59.999",
+                "resultsPerPage": 2000  # Aumentar el número de resultados por página
+            }
+
+            # Añadir término de búsqueda si existe
+            if search_term:
+                params["keywordSearch"] = search_term
+
+            # Añadir palabras clave si existen
+            if keywords:
+                params["keyword"] = ",".join(keywords)
+
+            # Añadir severidad si existe (solo CVSS v3)
+            if severity:
+                params["cvssV3Severity"] = severity.upper()
+
+            logger.info(f"Realizando búsqueda con parámetros: {params}")
+            
+            # Realizar la petición a la API
+            response = requests.get(
+                f"{self.base_url}/cves/search",
+                headers=self.headers,
+                params=params
+            )
+            
+            response.raise_for_status()
+            data = response.json()
+            
+            logger.info(f"Búsqueda exitosa. Total de resultados: {data.get('totalResults', 0)}")
+            
+            return data
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error en la búsqueda: {str(e)}")
+            raise Exception(f"Error al buscar vulnerabilidades: {str(e)}")
+        except Exception as e:
+            logger.error(f"Error inesperado: {str(e)}")
+            raise Exception(f"Error inesperado: {str(e)}")
 
     async def fetch_data(self, request: NistDataRequest) -> List[Dict[str, Any]]:
         """
@@ -39,11 +89,11 @@ class NistService:
             params = {
                 "lastModStartDate": f"{request.start_date}T13:00:00.000+01:00",
                 "lastModEndDate": f"{request.end_date}T13:36:00.000+01:00",
-                "resultsPerPage": 50
+                "resultsPerPage": 2000
             }
             
             if request.severity:
-                params["cvssV3Severity"] = request.severity
+                params["cvssV3Severity"] = request.severity.upper()
                 
             if request.search_term:
                 params["keywordSearch"] = request.search_term

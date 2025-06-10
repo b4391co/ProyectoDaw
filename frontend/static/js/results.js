@@ -11,17 +11,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     try {
         const data = JSON.parse(storedData);
-        displayResults(data.vulnerabilities);
+        // Obtener la severidad seleccionada del sessionStorage
+        const selectedSeverity = sessionStorage.getItem('selectedSeverity');
+        displayResults(data.vulnerabilities, selectedSeverity);
         
         // Limpiar los datos del sessionStorage después de usarlos
         sessionStorage.removeItem('searchResults');
+        sessionStorage.removeItem('selectedSeverity');
     } catch (error) {
         console.error('Error al procesar los datos:', error);
         showError('Error al procesar los resultados');
     }
 });
 
-function displayResults(vulnerabilities) {
+function displayResults(vulnerabilities, selectedSeverity) {
     const resultsTable = document.getElementById('resultsTable');
     
     if (!vulnerabilities || vulnerabilities.length === 0) {
@@ -29,13 +32,27 @@ function displayResults(vulnerabilities) {
         return;
     }
 
+    // Filtrar vulnerabilidades por severidad si se especificó
+    let filteredVulnerabilities = vulnerabilities;
+    if (selectedSeverity) {
+        filteredVulnerabilities = vulnerabilities.filter(vuln => {
+            const cvssV3 = vuln.cve?.metrics?.cvssMetricV31?.[0]?.cvssData;
+            return cvssV3?.baseSeverity === selectedSeverity;
+        });
+    }
+
+    if (filteredVulnerabilities.length === 0) {
+        showError(`No se encontraron vulnerabilidades con severidad ${selectedSeverity || 'seleccionada'}`);
+        return;
+    }
+
     // Añadir contador de resultados
     const resultCount = document.createElement('div');
     resultCount.className = 'alert alert-info mb-4';
-    resultCount.innerHTML = `Se encontraron <strong>${vulnerabilities.length}</strong> vulnerabilidades`;
+    resultCount.innerHTML = `Se encontraron <strong>${filteredVulnerabilities.length}</strong> vulnerabilidades${selectedSeverity ? ` con severidad ${selectedSeverity}` : ''}`;
     document.querySelector('.card-body').insertBefore(resultCount, document.querySelector('.table-responsive'));
 
-    vulnerabilities.forEach(vuln => {
+    filteredVulnerabilities.forEach(vuln => {
         const row = document.createElement('tr');
         
         // Extraer la severidad del CVSS
@@ -44,8 +61,9 @@ function displayResults(vulnerabilities) {
         const severity = cvssV3?.baseSeverity || cvssV2?.baseSeverity || 'UNKNOWN';
         const score = cvssV3?.baseScore || cvssV2?.baseScore || 'N/A';
         
-        // Formatear la fecha
+        // Formatear las fechas
         const publishedDate = new Date(vuln.cve?.published || '').toLocaleDateString();
+        const lastModifiedDate = new Date(vuln.cve?.lastModified || '').toLocaleDateString();
         
         // Obtener la descripción
         const description = vuln.cve?.descriptions?.[0]?.value || 'No description available';
@@ -85,7 +103,14 @@ function displayResults(vulnerabilities) {
                     ${vuln.cve?.id || 'N/A'}
                 </a>
             </td>
-            <td>${publishedDate}</td>
+            <td>
+                <div class="d-flex flex-column">
+                    <small class="text-muted">Publicación:</small>
+                    <span>${publishedDate}</span>
+                    <small class="text-muted mt-1">Última modificación:</small>
+                    <span>${lastModifiedDate}</span>
+                </div>
+            </td>
             <td>
                 <div class="btn-group">
                     <button class="btn btn-sm btn-outline-primary" 

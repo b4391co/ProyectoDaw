@@ -18,6 +18,11 @@ function getFormData() {
     const keywords = document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k);
     const severity = document.getElementById('severity').value;
     
+    // Guardar la severidad seleccionada en sessionStorage
+    if (severity) {
+        sessionStorage.setItem('selectedSeverity', severity);
+    }
+    
     return {
         start_date: startDate,
         end_date: endDate,
