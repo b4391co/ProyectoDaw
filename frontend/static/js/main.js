@@ -14,8 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function getFormData() {
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
-    const searchTerm = document.getElementById('searchTerm').value;
-    const keywords = document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k);
+    const searchTerm = document.getElementById('searchTerm').value.trim();
     const severity = document.getElementById('severity').value;
     
     // Guardar la severidad seleccionada en sessionStorage
@@ -26,8 +25,7 @@ function getFormData() {
     return {
         start_date: startDate,
         end_date: endDate,
-        search_term: searchTerm,
-        keywords: keywords,
+        search_term: searchTerm || undefined,
         severity: severity || undefined,
         output_format: 'json',
         pretty_json: true

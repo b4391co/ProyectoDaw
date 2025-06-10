@@ -22,22 +22,18 @@ class NistService:
         logger.info(f"API Key presente: {bool(self.api_key)}")
 
     async def search_vulnerabilities(self, start_date: str, end_date: str, search_term: str = None, 
-                                   keywords: list = None, severity: str = None):
+                                   severity: str = None):
         try:
             # Construir los parámetros de búsqueda
             params = {
                 "pubStartDate": f"{start_date}T00:00:00.000",
                 "pubEndDate": f"{end_date}T23:59:59.999",
-                "resultsPerPage": 2000  # Aumentar el número de resultados por página
+                "resultsPerPage": 2000  # Límite de la API NIST
             }
 
             # Añadir término de búsqueda si existe
             if search_term:
                 params["keywordSearch"] = search_term
-
-            # Añadir palabras clave si existen
-            if keywords:
-                params["keyword"] = ",".join(keywords)
 
             # Añadir severidad si existe (solo CVSS v3)
             if severity:
@@ -97,9 +93,6 @@ class NistService:
                 
             if request.search_term:
                 params["keywordSearch"] = request.search_term
-                
-            if request.keywords:
-                params["keyword"] = ",".join(request.keywords)
 
             # Construir la URL completa con los parámetros
             full_url = f"{url}?{urlencode(params)}"

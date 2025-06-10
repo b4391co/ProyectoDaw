@@ -9,46 +9,56 @@
 </head>
 <body>
     <div class="container py-5">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Buscador de Vulnerabilidades NIST</h2>
-            </div>
-            <div class="card-body">
-                <form id="searchForm" class="needs-validation" novalidate>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="startDate" class="form-label">Fecha Inicio</label>
-                            <input type="date" class="form-control" id="startDate" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="endDate" class="form-label">Fecha Fin</label>
-                            <input type="date" class="form-control" id="endDate" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="searchTerm" class="form-label">Término de Búsqueda</label>
-                            <input type="text" class="form-control" id="searchTerm" placeholder="Ej: Apache, Windows, etc.">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="keywords" class="form-label">Palabras Clave (separadas por comas)</label>
-                            <input type="text" class="form-control" id="keywords" placeholder="Ej: remote, code execution, etc.">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="severity" class="form-label">Severidad</label>
-                            <select class="form-select" id="severity">
-                                <option value="">Todas</option>
-                                <option value="CRITICAL">Crítica</option>
-                                <option value="HIGH">Alta</option>
-                                <option value="MEDIUM">Media</option>
-                                <option value="LOW">Baja</option>
-                            </select>
-                        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h4 mb-0">NIST Vulnerability Scanner</h1>
                     </div>
-                    <div class="mt-4">
-                        <button type="submit" id="searchButton" class="btn btn-primary">
-                            Buscar
-                        </button>
+                    <div class="card-body">
+                        <form id="searchForm" class="needs-validation" novalidate>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="startDate" class="form-label">Fecha Inicio</label>
+                                    <input type="date" class="form-control" id="startDate" required>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona una fecha de inicio
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="endDate" class="form-label">Fecha Fin</label>
+                                    <input type="date" class="form-control" id="endDate" required>
+                                    <div class="invalid-feedback">
+                                        Por favor selecciona una fecha de fin
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="searchTerm" class="form-label">Término de Búsqueda</label>
+                                    <input type="text" class="form-control" id="searchTerm" 
+                                           placeholder="Ej: Apache, Windows, Linux, etc.">
+                                    <div class="form-text">
+                                        Ingresa el nombre del producto o sistema que quieres buscar
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="severity" class="form-label">Severidad</label>
+                                    <select class="form-select" id="severity">
+                                        <option value="">Todas las severidades</option>
+                                        <option value="CRITICAL">Crítica</option>
+                                        <option value="HIGH">Alta</option>
+                                        <option value="MEDIUM">Media</option>
+                                        <option value="LOW">Baja</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" id="searchButton" class="btn btn-primary w-100">
+                                        Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
