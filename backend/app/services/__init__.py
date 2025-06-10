@@ -1,3 +1,3 @@
 """
-Servicios para la aplicación NIST Data Converter.
+Servicios de la aplicación
 """ 

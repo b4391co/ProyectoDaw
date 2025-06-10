@@ -1,116 +1,152 @@
-/* Estilos generales */
 body {
     background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Estilos para las tarjetas */
 .card {
     border: none;
-    border-radius: 10px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+}
+
+.card-header {
+    border-radius: 0.5rem 0.5rem 0 0 !important;
 }
 
 .card-body {
     padding: 2rem;
 }
 
-/* Estilos para los inputs */
-.form-control:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
-
-/* Estilos para los botones */
-.btn-primary {
-    padding: 0.5rem 2rem;
-}
-
-.btn-group .btn {
-    padding: 0.5rem 1rem;
-}
-
-/* Estilos para los resultados */
-#resultsContent pre {
-    max-height: 500px;
-    overflow-y: auto;
-    margin: 0;
-}
-
-/* Estilos para el toast */
-.toast {
-    background-color: white;
-    border: none;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-}
-
-/* Estilos para los checkboxes y radio buttons */
-.form-check-input:checked {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-}
-
-/* Estilos para el navbar */
-.navbar {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Estilos para los labels */
 .form-label {
     font-weight: 500;
     color: #495057;
 }
 
-/* Estilos para los mensajes de error */
-.invalid-feedback {
-    font-size: 0.875rem;
-}
-
-/* Estilos para el contenedor de resultados */
-#searchResults {
-    transition: all 0.3s ease;
-}
-
-/* Estilos para los iconos */
-.bi {
-    margin-right: 0.5rem;
-}
-
-/* Estilos para el delimitador personalizado */
-#delimiterContainer {
-    transition: all 0.3s ease;
-}
-
-/* Estilos para el contenedor de opciones adicionales */
-.form-check {
-    margin-bottom: 0.5rem;
-}
-
-/* Estilos para el botón de búsqueda */
-.btn-lg {
-    padding: 0.75rem 2rem;
+.btn-primary {
+    padding: 0.75rem 1.5rem;
     font-weight: 500;
 }
 
-/* Estilos para el contenedor principal */
-.container {
-    max-width: 1200px;
-    padding: 2rem 1rem;
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
-/* Estilos para dispositivos móviles */
+.form-control:focus, .form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Estilos para la tabla de resultados */
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.description-cell {
+    max-width: 400px;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.severity-HIGH {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.severity-MEDIUM {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.severity-LOW {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.severity-UNKNOWN {
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.severity-CRITICAL {
+    color: #dc3545;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge {
+    font-size: 0.8rem;
+    padding: 0.35em 0.65em;
+}
+
+.btn-group {
+    gap: 0.5rem;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.btn-link {
+    text-decoration: none;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+/* Estilos para el contador de resultados */
+.alert-info {
+    background-color: #e8f4f8;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+/* Estilos para la tabla responsive */
+.table-responsive {
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Estilos para los enlaces CVE */
+.table a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.table a:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
 @media (max-width: 768px) {
-    .card-body {
-        padding: 1.5rem;
+    .description-cell {
+        max-width: 200px;
     }
     
-    .btn-lg {
-        width: 100%;
+    .table td, .table th {
+        padding: 0.5rem;
     }
     
     .btn-group {
-        width: 100%;
-    }
-    
-    .btn-group .btn {
-        flex: 1;
+        flex-direction: column;
+        gap: 0.25rem;
     }
 } 
