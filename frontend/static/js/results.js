@@ -1,18 +1,20 @@
 document.addEventListener('DOMContentLoaded', function() {
     const resultsTable = document.getElementById('resultsTable');
     
-    // Obtener los datos de la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const dataParam = urlParams.get('data');
+    // Obtener los datos del sessionStorage
+    const storedData = sessionStorage.getItem('searchResults');
     
-    if (!dataParam) {
+    if (!storedData) {
         showError('No se encontraron datos de búsqueda');
         return;
     }
 
     try {
-        const data = JSON.parse(decodeURIComponent(dataParam));
+        const data = JSON.parse(storedData);
         displayResults(data.vulnerabilities);
+        
+        // Limpiar los datos del sessionStorage después de usarlos
+        sessionStorage.removeItem('searchResults');
     } catch (error) {
         console.error('Error al procesar los datos:', error);
         showError('Error al procesar los resultados');
@@ -133,21 +135,22 @@ function showFullDescription(button, cveId) {
     const descriptionCell = button.closest('.description-cell');
     const shortDescription = descriptionCell.textContent.replace('Ver más', '').trim();
     
-    // Buscar la descripción completa en los datos originales
-    const urlParams = new URLSearchParams(window.location.search);
-    const dataParam = urlParams.get('data');
-    const data = JSON.parse(decodeURIComponent(dataParam));
-    const vuln = data.vulnerabilities.find(v => v.cve?.id === cveId);
-    
-    if (vuln) {
-        const fullDescription = vuln.cve?.descriptions?.[0]?.value || shortDescription;
-        descriptionCell.innerHTML = `
-            ${fullDescription}
-            <button class="btn btn-link btn-sm p-0 ms-2" 
-                    onclick="showShortDescription(this, '${shortDescription}')">
-                Ver menos
-            </button>
-        `;
+    // Buscar la descripción completa en los datos almacenados
+    const storedData = sessionStorage.getItem('searchResults');
+    if (storedData) {
+        const data = JSON.parse(storedData);
+        const vuln = data.vulnerabilities.find(v => v.cve?.id === cveId);
+        
+        if (vuln) {
+            const fullDescription = vuln.cve?.descriptions?.[0]?.value || shortDescription;
+            descriptionCell.innerHTML = `
+                ${fullDescription}
+                <button class="btn btn-link btn-sm p-0 ms-2" 
+                        onclick="showShortDescription(this, '${shortDescription}')">
+                    Ver menos
+                </button>
+            `;
+        }
     }
 }
 

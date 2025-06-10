@@ -1,79 +1,92 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchForm = document.getElementById('searchForm');
-    const startDateInput = document.getElementById('startDate');
-    const endDateInput = document.getElementById('endDate');
-
-    // Establecer fechas por defecto (últimos 4 días)
-    const today = new Date();
-    const fourDaysAgo = new Date(today);
-    fourDaysAgo.setDate(today.getDate() - 4);
-
-    startDateInput.value = fourDaysAgo.toISOString().split('T')[0];
-    endDateInput.value = today.toISOString().split('T')[0];
-
-    // Función para mostrar notificaciones
-    function showNotification(message, type = 'success') {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.role = 'alert';
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        `;
-        document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.row'));
-        
-        // Auto-cerrar después de 5 segundos
-        setTimeout(() => {
-            alertDiv.remove();
-        }, 5000);
+    const searchButton = document.getElementById('searchButton');
+    
+    if (searchForm) {
+        searchForm.addEventListener('submit', handleFormSubmit);
     }
-
-    // Función para obtener los datos del formulario
-    function getFormData() {
-        const keywords = document.getElementById('keywords').value
-            .split(',')
-            .map(k => k.trim())
-            .filter(k => k.length > 0);
-
-        return {
-            start_date: startDateInput.value,
-            end_date: endDateInput.value,
-            severity: document.getElementById('severity').value || null,
-            search_term: document.getElementById('searchTerm').value || null,
-            keywords: keywords
-        };
+    
+    if (searchButton) {
+        searchButton.addEventListener('click', handleFormSubmit);
     }
+});
 
-    // Manejar el envío del formulario
-    searchForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
+function getFormData() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const searchTerm = document.getElementById('searchTerm').value;
+    const keywords = document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k);
+    const severity = document.getElementById('severity').value;
+    
+    return {
+        start_date: startDate,
+        end_date: endDate,
+        search_term: searchTerm,
+        keywords: keywords,
+        severity: severity || undefined,
+        output_format: 'json',
+        pretty_json: true
+    };
+}
+
+async function handleFormSubmit(event) {
+    event.preventDefault();
+    
+    const searchButton = document.getElementById('searchButton');
+    if (searchButton) {
+        searchButton.disabled = true;
+        searchButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Buscando...';
+    }
+    
+    try {
+        const formData = getFormData();
+        console.log('Enviando datos:', formData);
         
-        try {
-            const formData = getFormData();
-            console.log('Enviando datos:', formData);
-
-            const response = await fetch('/api/search', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.detail || 'Error en la búsqueda');
-            }
-
-            const data = await response.json();
-            console.log('Respuesta recibida:', data);
-
-            // Redirigir a la página de resultados con los datos
-            window.location.href = `/results?data=${encodeURIComponent(JSON.stringify(data))}`;
-
-        } catch (error) {
-            console.error('Error:', error);
-            showNotification(error.message, 'danger');
+        const response = await fetch('/api/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Error en la búsqueda');
         }
-    });
-}); 
+        
+        const data = await response.json();
+        console.log('Respuesta recibida:', data);
+        
+        // Guardar los resultados en sessionStorage
+        sessionStorage.setItem('searchResults', JSON.stringify(data));
+        
+        // Redirigir a la página de resultados
+        window.location.href = '/results';
+        
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification(error.message || 'Error al realizar la búsqueda', 'danger');
+    } finally {
+        if (searchButton) {
+            searchButton.disabled = false;
+            searchButton.textContent = 'Buscar';
+        }
+    }
+}
+
+function showNotification(message, type = 'info') {
+    const notificationDiv = document.createElement('div');
+    notificationDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+    notificationDiv.style.zIndex = '1050';
+    notificationDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    document.body.appendChild(notificationDiv);
+    
+    setTimeout(() => {
+        notificationDiv.remove();
+    }, 5000);
+} 
