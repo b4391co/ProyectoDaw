@@ -1,8 +1,20 @@
+// Variable global para almacenar los datos
+let currentVulnerabilities = [];
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded');
     const resultsTable = document.getElementById('resultsTable');
+    const downloadCsvBtn = document.getElementById('downloadCsvBtn');
+    const downloadJsonBtn = document.getElementById('downloadJsonBtn');
+    
+    console.log('Buttons found:', {
+        csv: downloadCsvBtn,
+        json: downloadJsonBtn
+    });
     
     // Obtener los datos del sessionStorage
     const storedData = sessionStorage.getItem('searchResults');
+    console.log('Stored data:', storedData ? 'exists' : 'not found');
     
     if (!storedData) {
         showError('No se encontraron datos de búsqueda');
@@ -11,18 +23,79 @@ document.addEventListener('DOMContentLoaded', function() {
 
     try {
         const data = JSON.parse(storedData);
+        console.log('Parsed data:', data);
+        // Guardar los datos en la variable global
+        currentVulnerabilities = data.vulnerabilities;
+        
         // Obtener la severidad seleccionada del sessionStorage
         const selectedSeverity = sessionStorage.getItem('selectedSeverity');
-        displayResults(data.vulnerabilities, selectedSeverity);
+        displayResults(currentVulnerabilities, selectedSeverity);
         
-        // Limpiar los datos del sessionStorage después de usarlos
+        // Configurar los botones de descarga directamente
+        downloadCsvBtn.onclick = function() {
+            const csvContent = convertToCSV(currentVulnerabilities);
+            downloadFile(csvContent, 'csv');
+        };
+        
+        downloadJsonBtn.onclick = function() {
+            const jsonContent = JSON.stringify(currentVulnerabilities, null, 2);
+            downloadFile(jsonContent, 'json');
+        };
+        
+        // Limpiar sessionStorage
         sessionStorage.removeItem('searchResults');
         sessionStorage.removeItem('selectedSeverity');
     } catch (error) {
-        console.error('Error al procesar los datos:', error);
+        console.error('Error:', error);
         showError('Error al procesar los resultados');
     }
 });
+
+function downloadFile(content, format) {
+    const blob = new Blob([content], { 
+        type: format === 'csv' ? 'text/csv;charset=utf-8;' : 'application/json;charset=utf-8;'
+    });
+    
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `nist_vulnerabilities.${format}`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function convertToCSV(vulnerabilities) {
+    console.log('Converting to CSV');
+    // Definir las columnas que queremos en el CSV
+    const headers = ['CVE ID', 'Descripción', 'Severidad', 'Score', 'Fecha Publicación', 'Fecha Modificación'];
+    
+    // Crear las filas del CSV
+    const rows = vulnerabilities.map(vuln => {
+        const cvssV3 = vuln.cve?.metrics?.cvssMetricV31?.[0]?.cvssData;
+        const cvssV2 = vuln.cve?.metrics?.cvssMetricV2?.[0];
+        const severity = cvssV3?.baseSeverity || cvssV2?.baseSeverity || 'UNKNOWN';
+        const score = cvssV3?.baseScore || cvssV2?.baseScore || 'N/A';
+        const description = vuln.cve?.descriptions?.[0]?.value || 'No description available';
+        const publishedDate = new Date(vuln.cve?.published || '').toLocaleDateString();
+        const lastModifiedDate = new Date(vuln.cve?.lastModified || '').toLocaleDateString();
+
+        return [
+            vuln.cve?.id || 'N/A',
+            `"${description.replace(/"/g, '""')}"`, // Escapar comillas en la descripción
+            severity,
+            score,
+            publishedDate,
+            lastModifiedDate
+        ];
+    });
+
+    // Combinar headers y rows
+    return [headers, ...rows].map(row => row.join(',')).join('\n');
+}
 
 function displayResults(vulnerabilities, selectedSeverity) {
     const resultsTable = document.getElementById('resultsTable');
