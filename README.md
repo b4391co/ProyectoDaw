@@ -8,32 +8,28 @@ Este documento sirve como guión para la defensa del proyecto final del ciclo fo
 
 ## 1. Motivación (Breve)
 
-[cite_start]Este proyecto nace de una necesidad real detectada durante las prácticas del ciclo: la de consultar datos del NIST (National Institute of Standards and Technology) de forma automatizada. [cite: 1] [cite_start]La solución inicial fue un script de consola en Python, que, aunque funcional, carecía de usabilidad. [cite: 1]
-
-**NistDataConverter** evoluciona esa idea a una aplicación web completa y accesible. [cite_start]El objetivo es ofrecer una herramienta con interfaz gráfica para que estudiantes, investigadores y técnicos puedan consultar, filtrar y exportar datos de estándares y vulnerabilidades de forma intuitiva y eficiente. [cite: 1]
-
+Este proyecto nace de una necesidad real detectada durante las prácticas del ciclo: la de consultar datos del NIST (National Institute of Standards and Technology) de forma automatizada. La solución inicial fue un script de consola en Python, que, aunque funcional, carecía de usabilidad. 
+**NistDataConverter** evoluciona esa idea a una aplicación web completa y accesible. El objetivo es ofrecer una herramienta con interfaz gráfica para que estudiantes, investigadores y técnicos puedan consultar, filtrar y exportar datos de estándares y vulnerabilidades de forma intuitiva y eficiente. 
 ## 2. Demostración y Justificación de Objetivos
 
-[cite_start]A continuación, se realiza una demostración del funcionamiento de la aplicación en base a los objetivos comprometidos en el anteproyecto. [cite: 1, 2] [cite_start]Todos los objetivos han sido alcanzados: [cite: 2]
-
-- [cite_start]**[✓] Conexión con la API del NIST**: La aplicación se conecta en tiempo real a la API pública del NIST para obtener datos actualizados. [cite: 1, 2]
-- [cite_start]**[✓] Interfaz Web Intuitiva**: Se ha desarrollado un frontend claro y funcional con HTML, CSS y JavaScript, facilitando la interacción del usuario. [cite: 1, 2]
-- [cite_start]**[✓] Implementación de Filtros Avanzados**: Los usuarios pueden refinar sus búsquedas por rango de fechas y nivel de severidad. [cite: 1, 2]
-- [cite_start]**[✓] Visualización Estructurada de Resultados**: Los datos se presentan en la interfaz de forma ordenada para una fácil interpretación. [cite: 1, 2]
-- [cite_start]**[✓] Exportación Flexible de Datos**: La funcionalidad de exportar a JSON y CSV está implementada y es plenamente funcional. [cite: 1, 2]
-- [cite_start]**[✓] Mejora y Adaptación de Herramienta Existente**: Se ha evolucionado con éxito el script de consola original a una aplicación web robusta y accesible. [cite: 1, 2]
+A continuación, se realiza una demostración del funcionamiento de la aplicación en base a los objetivos comprometidos en el anteproyecto. Todos los objetivos han sido alcanzados: 
+- **[✓] Conexión con la API del NIST**: La aplicación se conecta en tiempo real a la API pública del NIST para obtener datos actualizados.
+- **[✓] Interfaz Web Intuitiva**: Se ha desarrollado un frontend claro y funcional con HTML, CSS y JavaScript, facilitando la interacción del usuario.
+- **[✓] Implementación de Filtros Avanzados**: Los usuarios pueden refinar sus búsquedas por rango de fechas y nivel de severidad.
+- **[✓] Visualización Estructurada de Resultados**: Los datos se presentan en la interfaz de forma ordenada para una fácil interpretación.
+- **[✓] Exportación Flexible de Datos**: La funcionalidad de exportar a JSON y CSV está implementada y es plenamente funcional.
+- **[✓] Mejora y Adaptación de Herramienta Existente**: Se ha evolucionado con éxito el script de consola original a una aplicación web robusta y accesible.
 
 ## 3. Descripción Técnica
 
-#### a. Arquitectura de la aplicación y tecnologías utilizadas `[doc]`
+#### a. Arquitectura de la aplicación y tecnologías utilizadas
 
-[cite_start]La aplicación sigue una arquitectura cliente-servidor de 3 capas para separar responsabilidades y asegurar la escalabilidad. [cite: 1]
+La aplicación sigue una arquitectura cliente-servidor de 3 capas para separar responsabilidades y asegurar la escalabilidad. 
+- **Capa de Presentación (Frontend)**: Construida con **HTML, CSS y JavaScript** estándar para asegurar la compatibilidad. Se ha utilizado **Bootstrap** para lograr un diseño responsive y profesional.
+- **Capa de Lógica (Backend)**: Desarrollada en **Python** con el framework **FastAPI**, elegido por su alto rendimiento y su generación automática de documentación. La librería **Pandas** es clave para la manipulación y conversión de datos a CSV.
+- **Capa de Datos**: La fuente de datos es la **API pública del NIST**. Los archivos para exportación (JSON y CSV) se generan al vuelo sin necesidad de una base de datos local.
 
-- [cite_start]**Capa de Presentación (Frontend)**: Construida con **HTML, CSS y JavaScript** estándar para asegurar la compatibilidad. [cite: 1] [cite_start]Se ha utilizado **Bootstrap** para lograr un diseño responsive y profesional. [cite: 1, 2]
-- [cite_start]**Capa de Lógica (Backend)**: Desarrollada en **Python** con el framework **FastAPI**, elegido por su alto rendimiento y su generación automática de documentación. [cite: 1, 2] [cite_start]La librería **Pandas** es clave para la manipulación y conversión de datos a CSV. [cite: 1, 2]
-- [cite_start]**Capa de Datos**: La fuente de datos es la **API pública del NIST**. [cite: 1, 2] [cite_start]Los archivos para exportación (JSON y CSV) se generan al vuelo sin necesidad de una base de datos local. [cite: 1, 2]
-
-#### b. Diagrama de Componentes `[doc]`
+#### b. Diagrama de Componentes
 
 El siguiente diagrama ilustra las partes principales del sistema y cómo interactúan entre sí.
 
@@ -63,7 +59,7 @@ graph TD
     D -- Devuelve datos a --> C
 ```
 
-#### c. Diagrama de Flujo `[doc]`
+#### c. Diagrama de Flujo
 
 Dado que no se utiliza base de datos, se presenta el diagrama de flujo que describe el recorrido de una petición.
 
@@ -86,29 +82,29 @@ sequenceDiagram
 
 ## 4. Metodología de Desarrollo
 
-[cite_start]El proyecto se gestionó con una **metodología incremental**, dividiendo el desarrollo en fases que entregaban partes funcionales del sistema. [cite: 1, 2] [cite_start]Este enfoque permitió flexibilidad, control continuo y una buena gestión del tiempo. [cite: 1, 2]
+El proyecto se gestionó con una **metodología incremental**, dividiendo el desarrollo en fases que entregaban partes funcionales del sistema. Este enfoque permitió flexibilidad, control continuo y una buena gestión del tiempo.
 
-[cite_start]El flujo de trabajo se apoyó en **Git y GitHub** para el control de versiones, utilizando ramas para cada nueva funcionalidad (`feature-branches`) para mantener el código principal (`main`) siempre estable. [cite: 2]
-
-## 5. Diagrama de Gantt `[doc]`
+El flujo de trabajo se apoyó en **Git y GitHub** para el control de versiones, utilizando ramas para cada nueva funcionalidad (`feature-branches`) para mantener el código principal (`main`) siempre estable. 
+## 5. Diagrama de Gantt
 
 #### Planificación Inicial (Anteproyecto)
 
 ```mermaid
 gantt
-    title Planificación Inicial del Proyecto
+gantt
+    title Diagrama de Gantt - Planificación Inicial
     dateFormat  YYYY-MM-DD
-    axisFormat  %d-%m
+    axisFormat  %d-%m-%Y
 
-    section Fases
-    Análisis de requisitos        : 2025-05-30, 4d
-    Diseño técnico e interfaz     : after Análisis de requisitos, 4d
-    Iteración 1: Backend y API    : after Diseño técnico e interfaz, 6d
-    Iteración 2: Frontend y filtros : after Iteración 1: Backend y API, 6d
-    Iteración 3: Exportación y UI : after Iteración 2: Frontend y filtros, 5d
-    Pruebas y validación          : after Iteración 3: Exportación y UI, 4d
-    Despliegue en la nube         : after Pruebas y validación, 2d
-    Documentación y presentación  : after Despliegue en la nube, 6d
+    section Fases del Proyecto
+    Análisis de requisitos        :done, 2025-05-30, 2025-06-04
+    Diseño técnico e interfaz     :done, 2025-06-05, 2025-06-10
+    Iteración 1: Backend y API    :done, 2025-06-11, 2025-06-18
+    Iteración 2: Frontend y filtros :done, 2025-06-19, 2025-06-26
+    Iteración 3: Exportación y UI :done, 2025-06-27, 2025-07-03
+    Pruebas y validación          :done, 2025-07-04, 2025-07-09
+    Despliegue en la nube         :done, 2025-07-10, 2025-07-11
+    Documentación y presentación  :done, 2025-07-14, 2025-07-21
 ```
 
 #### Ejecución Final (Real)
@@ -132,13 +128,13 @@ gantt
 
 #### a. Análisis y justificación de las diferencias en las estimaciones.
 
-Las desviaciones entre la planificación y la ejecución real fueron mínimas. [cite_start]La fase de desarrollo del backend se extendió ligeramente para comprender en profundidad la estructura de datos de la API del NIST. [cite: 2] [cite_start]Sin embargo, este tiempo se recuperó en la fase de desarrollo del frontend, ya que el uso del framework Bootstrap agilizó la creación de una interfaz profesional y responsive. [cite: 2] En general, la planificación inicial resultó ser precisa y realista.
+Las desviaciones entre la planificación y la ejecución real fueron mínimas. La fase de desarrollo del backend se extendió ligeramente para comprender en profundidad la estructura de datos de la API del NIST. Sin embargo, este tiempo se recuperó en la fase de desarrollo del frontend, ya que el uso del framework Bootstrap agilizó la creación de una interfaz profesional y responsive. En general, la planificación inicial resultó ser precisa y realista.
 
 ## 6. Análisis de Tiempo Invertido (Estimado)
 
 Al no utilizar una herramienta de seguimiento de tiempo, este análisis distribuye las **222 horas totales estimadas** del proyecto entre los módulos del ciclo formativo de **Desarrollo de Aplicaciones Web (DAW)** para justificar las competencias aplicadas.
 
-#### a. Diagrama de tiempo invertido por componente y/o asignaturas `[doc]`
+#### a. Diagrama de tiempo invertido por componente y/o asignaturas
 
 ```mermaid
 pie
@@ -160,29 +156,29 @@ pie
 
 ## 7. Presupuesto de la Aplicación
 
-[cite_start]El proyecto se ha desarrollado con un enfoque de **coste mínimo**, aprovechando herramientas de código abierto y servicios con planes gratuitos. [cite: 1, 2]
+El proyecto se ha desarrollado con un enfoque de **coste mínimo**, aprovechando herramientas de código abierto y servicios con planes gratuitos.
 
 | Concepto | Detalle | Coste Estimado | Justificación |
 | :--- | :--- | :--- | :--- |
-| **Recursos Humanos** | 1 Desarrollador (estudiante) | 0 € | [cite_start]El trabajo se enmarca en el proyecto final del ciclo formativo. [cite: 2] |
-| **Hardware** | Portátil de desarrollo propio | 0 € | [cite_start]Equipo ya amortizado. [cite: 2] |
-| **Software** | SO (Linux), IDE (VS Code), Git, Python, FastAPI, etc. | 0 € | [cite_start]Uso de software libre y de código abierto. [cite: 1, 2] |
-| **Servicios en Línea**| Hosting (Render/Railway) | 0 € - 15 € | [cite_start]Se utiliza un plan gratuito para el despliegue. [cite: 1, 2] [cite_start]El coste estimado refleja un posible escalado a un plan básico. [cite: 1, 2] |
-| **TOTAL** | | **0 € - 15 €** | [cite_start]**El coste directo del proyecto es prácticamente nulo.** [cite: 2] |
+| **Recursos Humanos** | 1 Desarrollador (estudiante) | 0 € | El trabajo se enmarca en el proyecto final del ciclo formativo. |
+| **Hardware** | Portátil de desarrollo propio | 0 € | Equipo ya amortizado. |
+| **Software** | SO (Linux), IDE (VS Code), Git, Python, FastAPI, etc. | 0 € | Uso de software libre y de código abierto. |
+| **Servicios en Línea**| Hosting (Render/Railway) | 0 € - 15 € | Se utiliza un plan gratuito para el despliegue. El coste estimado refleja un posible escalado a un plan básico. |
+| **TOTAL** | | **0 € - 15 €** | **El coste directo del proyecto es prácticamente nulo.** |
 
 ## 8. Conclusiones
 
 #### a. Posibles mejoras
 
-[cite_start]El proyecto actual es una base sólida que podría expandirse con nuevas funcionalidades: [cite: 2]
+El proyecto actual es una base sólida que podría expandirse con nuevas funcionalidades:
 
-- [cite_start]**Integración con más APIs**: Conectar con otras fuentes de datos (ej. CVE Details) para enriquecer la información. [cite: 1, 2]
-- [cite_start]**Visualización de datos**: Añadir gráficos para analizar tendencias de vulnerabilidades. [cite: 1, 2]
-- [cite_start]**Sistema de notificaciones**: Implementar alertas por correo electrónico sobre nuevas vulnerabilidades. [cite: 1, 2]
-- [cite_start]**Cuentas de usuario**: Permitir a los usuarios guardar sus búsquedas personalizadas. [cite: 2]
+- **Integración con más APIs**: Conectar con otras fuentes de datos (ej. CVE Details) para enriquecer la información.
+- **Visualización de datos**: Añadir gráficos para analizar tendencias de vulnerabilidades. 
+- **Sistema de notificaciones**: Implementar alertas por correo electrónico sobre nuevas vulnerabilidades. 
+- **Cuentas de usuario**: Permitir a los usuarios guardar sus búsquedas personalizadas. 
 
 #### b. Principales dificultades encontradas
 
-- [cite_start]**Curva de aprendizaje inicial**: Aunque las tecnologías eran conocidas, dominar detalles específicos de la API del NIST y su estructura de datos requirió tiempo al principio. [cite: 1, 2]
-- [cite_start]**Gestión del volumen de datos**: En consultas muy amplias, el rendimiento podría ser un desafío, por lo que se optimizó el backend para un procesamiento eficiente. [cite: 1, 2]
-- [cite_start]**Desarrollo en solitario**: Asumir todos los roles del proyecto (gestor, analista, programador, tester) exigió una gran capacidad de organización. [cite: 1, 2]
+- **Curva de aprendizaje inicial**: Aunque las tecnologías eran conocidas, dominar detalles específicos de la API del NIST y su estructura de datos requirió tiempo al principio.
+- **Gestión del volumen de datos**: En consultas muy amplias, el rendimiento podría ser un desafío, por lo que se optimizó el backend para un procesamiento eficiente.
+- **Desarrollo en solitario**: Asumir todos los roles del proyecto (gestor, analista, programador, tester) exigió una gran capacidad de organización.
