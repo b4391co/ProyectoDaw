@@ -91,7 +91,6 @@ El flujo de trabajo se apoyó en **Git y GitHub** para el control de versiones, 
 
 ```mermaid
 gantt
-gantt
     title Diagrama de Gantt - Planificación Inicial
     dateFormat  YYYY-MM-DD
     axisFormat  %d-%m-%Y
