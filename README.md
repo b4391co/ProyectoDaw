@@ -2,15 +2,15 @@
 
 ---
 
-# NistDataConverter - Conversor Web de Datos del NIST a JSON y CSV
+# NistDataConverter - Un conversor de datos del NIST a JSON y CSV
 
-Este documento sirve como guión para la defensa del proyecto final del ciclo formativo de Desarrollo de Aplicaciones Web.
+Este documento es el guion que usaré para defender mi proyecto final del ciclo de Desarrollo de Aplicaciones Web.
 
-## 1. Motivación (Breve)
+## 1. Motivación
 
-Este proyecto nace de una necesidad real detectada durante las prácticas del ciclo: la de consultar datos del NIST (National Institute of Standards and Technology) de forma automatizada. La solución inicial fue un script de consola en Python, que, aunque funcional, carecía de usabilidad. 
-**NistDataConverter** evoluciona esa idea a una aplicación web completa y accesible. El objetivo es ofrecer una herramienta con interfaz gráfica para que estudiantes, investigadores y técnicos puedan consultar, filtrar y exportar datos de estándares y vulnerabilidades de forma intuitiva y eficiente. 
-## 2. Demostración y Justificación de Objetivos
+La idea de este proyecto salió de una necesidad que me encontré durante las prácticasTenía que consultar datos del NIST (National Institute of Standards and Technology) de forma automática y la primera solución fue un simple script de Python por consola. Funcionaba, pero no era nada cómodo de usar
+**NistDataConverter** es la evolución de ese script. Quería llevarlo a una aplicación web completa, con una interfaz gráfica fácil de usar para que cualquiera, ya sean estudiantes o técnicos, pueda consultar, filtrar y exportar los datos de vulnerabilidades del NIST sin complicaciones
+## 2. Demostración y Objetivos
 
 A continuación, se realiza una demostración del funcionamiento de la aplicación en base a los objetivos comprometidos en el anteproyecto. Todos los objetivos han sido alcanzados: 
 - **[✓] Conexión con la API del NIST**: La aplicación se conecta en tiempo real a la API pública del NIST para obtener datos actualizados.
@@ -84,7 +84,7 @@ sequenceDiagram
 
 El proyecto se gestionó con una **metodología incremental**, dividiendo el desarrollo en fases que entregaban partes funcionales del sistema. Este enfoque permitió flexibilidad, control continuo y una buena gestión del tiempo.
 
-El flujo de trabajo se apoyó en **Git y GitHub** para el control de versiones, utilizando ramas para cada nueva funcionalidad (`feature-branches`) para mantener el código principal (`main`) siempre estable. 
+El flujo de trabajo se apoyó en **Git y GitHub** para el control de versiones, manteniendo el código principal (`main`) siempre estable. 
 ## 5. Diagrama de Gantt
 
 #### Planificación Inicial (Anteproyecto)
@@ -102,7 +102,7 @@ gantt
     Iteración 2: Frontend y filtros :done, 2025-06-19, 2025-06-26
     Iteración 3: Exportación y UI :done, 2025-06-27, 2025-07-03
     Pruebas y validación          :done, 2025-07-04, 2025-07-09
-    Despliegue en la nube         :done, 2025-07-10, 2025-07-11
+    Despliegue                    :done, 2025-07-10, 2025-07-11
     Documentación y presentación  :done, 2025-07-14, 2025-07-21
 ```
 
@@ -155,7 +155,7 @@ pie
 
 ## 7. Presupuesto de la Aplicación
 
-El proyecto se ha desarrollado con un enfoque de **coste mínimo**, aprovechando herramientas de código abierto y servicios con planes gratuitos.
+El proyecto se ha hecho intentando gastar lo mínimo, usando herramientas de código abierto y servicios con planes gratuitos.
 
 | Concepto | Detalle | Coste Estimado | Justificación |
 | :--- | :--- | :--- | :--- |
@@ -169,14 +169,14 @@ El proyecto se ha desarrollado con un enfoque de **coste mínimo**, aprovechando
 
 #### a. Posibles mejoras
 
-El proyecto actual es una base sólida que podría expandirse con nuevas funcionalidades:
+El proyecto es una buena base, pero se podrían añadir nuevas funciones en el futuro:
 
 - **Integración con más APIs**: Conectar con otras fuentes de datos (ej. CVE Details) para enriquecer la información.
 - **Visualización de datos**: Añadir gráficos para analizar tendencias de vulnerabilidades. 
 - **Sistema de notificaciones**: Implementar alertas por correo electrónico sobre nuevas vulnerabilidades. 
 - **Cuentas de usuario**: Permitir a los usuarios guardar sus búsquedas personalizadas. 
 
-#### b. Principales dificultades encontradas
+#### b. Dificultades encontradas
 
 - **Curva de aprendizaje inicial**: Aunque las tecnologías eran conocidas, dominar detalles específicos de la API del NIST y su estructura de datos requirió tiempo al principio.
 - **Gestión del volumen de datos**: En consultas muy amplias, el rendimiento podría ser un desafío, por lo que se optimizó el backend para un procesamiento eficiente.
