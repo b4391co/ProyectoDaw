@@ -190,7 +190,7 @@ El proyecto se ha hecho intentando gastar lo mínimo, usando herramientas de có
 | Hardware | Portátil de desarrollo propio | 0 € | Equipo ya amortizado. |
 | Software | SO (Linux), IDE, Git, Python, etc. | 0 € | Uso de software libre y de código abierto. |
 | Servicios en Línea | Hosting (Render/Railway) | 0 € - 15 € | Se utiliza un plan gratuito para el despliegue. El coste refleja un posible escalado. |
-| TOTAL |  | 2.664 € - 2.679 € | El coste real del proyecto sigue siendo prácticamente nulo. |
+| TOTAL |  | 2.664 € - 2.679 € | El coste real del proyecto es bajo. |
 
 
 ## 9. Conclusiones
