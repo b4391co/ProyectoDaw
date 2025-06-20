@@ -37,9 +37,9 @@ Para guiar el desarrollo y asegurar que la herramienta cumple con necesidades re
 * **Quiero** analizar el código del proyecto, especialmente la comunicación entre el frontend y el backend, **para** aprender de un caso real cómo se consume una API REST de terceros y se estructura una aplicación completa con Python y JavaScript.
 
 
-## 3. Demostración y Objetivos
+## 3. Objetivos
 
-A continuación, se realiza una demostración del funcionamiento de la aplicación en base a los objetivos comprometidos en el anteproyecto. Todos los objetivos han sido alcanzados: 
+Todos los objetivos han sido alcanzados: 
 - **[✓] Conexión con la API del NIST**: La aplicación se conecta en tiempo real a la API pública del NIST para obtener datos actualizados.
 - **[✓] Interfaz Web Intuitiva**: Se ha desarrollado un frontend claro y funcional con HTML, CSS y JavaScript, facilitando la interacción del usuario.
 - **[✓] Implementación de Filtros Avanzados**: Los usuarios pueden refinar sus búsquedas por rango de fechas y nivel de severidad.
