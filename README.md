@@ -111,6 +111,28 @@ gantt
 #### Ejecución Final (Real)
 
 ```mermaid
+#### Planificación Inicial (Anteproyecto)
+
+```mermaid
+gantt
+    title Diagrama de Gantt - Planificación Inicial
+    dateFormat  YYYY-MM-DD
+    axisFormat  %d-%m-%Y
+
+    section Fases del Proyecto
+    Análisis de requisitos        :done, 2025-05-30, 2025-06-04
+    Diseño técnico e interfaz     :done, 2025-06-05, 2025-06-10
+    Iteración 1: Backend y API    :done, 2025-06-11, 2025-06-18
+    Iteración 2: Frontend y filtros :done, 2025-06-19, 2025-06-26
+    Iteración 3: Exportación y UI :done, 2025-06-27, 2025-07-03
+    Pruebas y validación          :done, 2025-07-04, 2025-07-09
+    Despliegue                    :done, 2025-07-10, 2025-07-11
+    Documentación y presentación  :done, 2025-07-14, 2025-07-21
+```
+
+#### Ejecución Final (Real)
+
+```mermaid
 gantt
     title Diagrama de Gantt - Ejecución Final (Real)
     dateFormat  YYYY-MM-DD
