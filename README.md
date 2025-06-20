@@ -169,7 +169,7 @@ pie
     "DIW (Diseño UI)" : 39
     "DWEC (Frontend)" : 36
     "EIE (Gestión y Doc.)" : 60
-    "ED (Pruebas y Git)" : 24
+    "CD (Pruebas y Git)" : 24
     "DAW (Despliegue)" : 12
 ```
 
@@ -178,7 +178,7 @@ pie
 - **EIE (60h)**: Es el bloque con más horas, ya que abarca la planificación, el análisis y toda la documentación del proyecto, tareas fundamentales para asegurar la calidad.
 - **DWES (51h)**: Representa el núcleo técnico. El backend contiene la lógica de negocio y la comunicación con servicios externos, justificando su peso.
 - **DIW (39h) y DWEC (36h)**: Suman una parte importante dedicada a crear una experiencia de usuario clara, funcional e interactiva.
-- **ED (24h) y DAW (12h)**: Aunque son porcentajes menores, estas fases fueron críticas para asegurar la calidad del producto final y hacerlo accesible en un entorno real.
+- **CD (24h) y DAW (12h)**: Aunque son porcentajes menores, estas fases fueron críticas para asegurar la calidad del producto final y hacerlo accesible en un entorno real.
 
 ## 8. Presupuesto de la Aplicación
 
