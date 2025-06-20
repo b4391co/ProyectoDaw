@@ -91,6 +91,7 @@ El flujo de trabajo se apoyó en **Git y GitHub** para el control de versiones, 
 
 #### Planificación Inicial (Anteproyecto)
 
+
 ```mermaid
 gantt
     title Diagrama de Gantt - Planificación Inicial
