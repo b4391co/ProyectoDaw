@@ -185,12 +185,13 @@ pie
 El proyecto se ha hecho intentando gastar lo mínimo, usando herramientas de código abierto y servicios con planes gratuitos.
 
 | Concepto | Detalle | Coste Estimado | Justificación |
-| :--- | :--- | :--- | :--- |
-| **Recursos Humanos** | 1 Desarrollador (estudiante) | 0 € | El trabajo se enmarca en el proyecto final del ciclo formativo. |
-| **Hardware** | Portátil de desarrollo propio | 0 € | Equipo ya amortizado. |
-| **Software** | SO (Linux), IDE (VS Code), Git, Python, FastAPI, etc. | 0 € | Uso de software libre y de código abierto. |
-| **Servicios en Línea**| Hosting (Render/Railway) | 0 € - 15 € | Se utiliza un plan gratuito para el despliegue. El coste estimado refleja un posible escalado a un plan básico. |
-| **TOTAL** | | **0 € - 15 €** | **El coste directo del proyecto es prácticamente nulo.** |
+|---|---|---|---|
+| Recursos Humanos (Precio Sombra) | 1 Desarrollador (222 horas x 12 €/h) | 2.664 € | Coste teórico del trabajo si fuera remunerado. No es un gasto real. |
+| Hardware | Portátil de desarrollo propio | 0 € | Equipo ya amortizado. |
+| Software | SO (Linux), IDE, Git, Python, etc. | 0 € | Uso de software libre y de código abierto. |
+| Servicios en Línea | Hosting (Render/Railway) | 0 € - 15 € | Se utiliza un plan gratuito para el despliegue. El coste refleja un posible escalado. |
+| TOTAL |  | 2.664 € - 2.679 € | El coste real del proyecto sigue siendo prácticamente nulo. |
+
 
 ## 9. Conclusiones
 
