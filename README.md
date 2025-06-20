@@ -12,7 +12,32 @@ Este documento es el guion que usaré para defender mi proyecto final del ciclo 
 
 La idea de este proyecto salió de una necesidad que me encontré durante las prácticasTenía que consultar datos del NIST (National Institute of Standards and Technology) de forma automática y la primera solución fue un simple script de Python por consola. Funcionaba, pero no era nada cómodo de usar
 **NistDataConverter** es la evolución de ese script. Quería llevarlo a una aplicación web completa, con una interfaz gráfica fácil de usar para que cualquiera, ya sean estudiantes o técnicos, pueda consultar, filtrar y exportar los datos de vulnerabilidades del NIST sin complicaciones
-## 2. Demostración y Objetivos
+
+## 2. Historias de Usuario
+
+Para guiar el desarrollo y asegurar que la herramienta cumple con necesidades reales, se han definido las siguientes historias de usuario:
+
+#### **Como Investigador / Analista de Seguridad:**
+
+* **Quiero** filtrar las vulnerabilidades por nivel de severidad (ej. "CRÍTICA") **para** poder enfocar mi análisis en las amenazas más peligrosas y priorizar las acciones de mitigación.
+* **Quiero** descargar los resultados en formato **JSON** **para** poder integrar los datos de forma automática en mis propias herramientas y scripts de análisis.
+
+#### **Como Estudiante de Ciberseguridad:**
+
+* **Quiero** buscar vulnerabilidades publicadas en un rango de fechas específico **para** poder realizar trabajos académicos sobre las amenazas de un periodo concreto.
+* **Quiero** exportar los datos a formato **CSV** **para** poder importarlos fácilmente en una hoja de cálculo, crear gráficos y presentar mis conclusiones en informes.
+
+#### **Como Técnico de Sistemas / Pentester:**
+
+* **Quiero** una interfaz web sencilla y rápida **para** poder realizar consultas sobre la marcha durante una auditoría, sin necesidad de instalar software ni configurar un entorno complejo.
+* **Quiero** ver los resultados en una tabla clara y ordenada **para** poder identificar de un vistazo la información clave, como los identificadores CVE y las puntuaciones de severidad.
+
+#### **Como Estudiante de Desarrollo de Aplicaciones Web (DAW):**
+
+* **Quiero** analizar el código del proyecto, especialmente la comunicación entre el frontend y el backend, **para** aprender de un caso real cómo se consume una API REST de terceros y se estructura una aplicación completa con Python y JavaScript.
+
+
+## 3. Demostración y Objetivos
 
 A continuación, se realiza una demostración del funcionamiento de la aplicación en base a los objetivos comprometidos en el anteproyecto. Todos los objetivos han sido alcanzados: 
 - **[✓] Conexión con la API del NIST**: La aplicación se conecta en tiempo real a la API pública del NIST para obtener datos actualizados.
@@ -22,7 +47,7 @@ A continuación, se realiza una demostración del funcionamiento de la aplicaci�
 - **[✓] Exportación Flexible de Datos**: La funcionalidad de exportar a JSON y CSV está implementada y es plenamente funcional.
 - **[✓] Mejora y Adaptación de Herramienta Existente**: Se ha evolucionado con éxito el script de consola original a una aplicación web robusta y accesible.
 
-## 3. Descripción Técnica
+## 4. Descripción Técnica
 
 #### a. Arquitectura de la aplicación y tecnologías utilizadas
 
@@ -82,12 +107,12 @@ sequenceDiagram
     Frontend-->>Usuario: Visualiza y descarga JSON/CSV
 ```
 
-## 4. Metodología de Desarrollo
+## 5. Metodología de Desarrollo
 
 El proyecto se gestionó con una **metodología incremental**, dividiendo el desarrollo en fases que entregaban partes funcionales del sistema. Este enfoque permitió flexibilidad, control continuo y una buena gestión del tiempo.
 
 El flujo de trabajo se apoyó en **Git y GitHub** para el control de versiones, manteniendo el código principal (`main`) siempre estable. 
-## 5. Diagrama de Gantt
+## 6. Diagrama de Gantt
 
 #### Planificación Inicial (Anteproyecto)
 
@@ -131,7 +156,7 @@ gantt
 
 Las desviaciones entre la planificación y la ejecución real fueron mínimas. La fase de desarrollo del backend se extendió ligeramente para comprender en profundidad la estructura de datos de la API del NIST. Sin embargo, este tiempo se recuperó en la fase de desarrollo del frontend, ya que el uso del framework Bootstrap agilizó la creación de una interfaz profesional y responsive. En general, la planificación inicial resultó ser precisa y realista.
 
-## 6. Análisis de Tiempo Invertido (Estimado)
+## 7. Análisis de Tiempo Invertido (Estimado)
 
 Al no utilizar una herramienta de seguimiento de tiempo, este análisis distribuye las **222 horas totales estimadas** del proyecto entre los módulos del ciclo formativo de **Desarrollo de Aplicaciones Web (DAW)** para justificar las competencias aplicadas.
 
@@ -155,7 +180,7 @@ pie
 - **DIW (39h) y DWEC (36h)**: Suman una parte importante dedicada a crear una experiencia de usuario clara, funcional e interactiva.
 - **ED (24h) y DAW (12h)**: Aunque son porcentajes menores, estas fases fueron críticas para asegurar la calidad del producto final y hacerlo accesible en un entorno real.
 
-## 7. Presupuesto de la Aplicación
+## 8. Presupuesto de la Aplicación
 
 El proyecto se ha hecho intentando gastar lo mínimo, usando herramientas de código abierto y servicios con planes gratuitos.
 
@@ -167,7 +192,7 @@ El proyecto se ha hecho intentando gastar lo mínimo, usando herramientas de có
 | **Servicios en Línea**| Hosting (Render/Railway) | 0 € - 15 € | Se utiliza un plan gratuito para el despliegue. El coste estimado refleja un posible escalado a un plan básico. |
 | **TOTAL** | | **0 € - 15 €** | **El coste directo del proyecto es prácticamente nulo.** |
 
-## 8. Conclusiones
+## 9. Conclusiones
 
 #### a. Posibles mejoras
 
